@@ -1,0 +1,5 @@
+/smartCampusAPI/target/
+
+# osx generated files
+.DS_Store
+profile
