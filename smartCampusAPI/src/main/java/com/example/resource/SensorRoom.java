@@ -10,8 +10,10 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import java.util.List;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.POST;
 import javax.ws.rs.PathParam;
+import javax.ws.rs.core.Response;
 
 // This maps directly to /api/v1
 @Path("/rooms") 
@@ -21,7 +23,7 @@ public class SensorRoom {
     
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public List<Room> getAllTeachers() {
+    public List<Room> getAllRooms() {
         return roomDAO.getAll();
     }
     
@@ -30,18 +32,32 @@ public class SensorRoom {
     @Path("/{roomId}")
     @Produces(MediaType.APPLICATION_JSON)
     public Room getRoomById(@PathParam("roomId") String id) {
-        Room teacher = roomDAO.getById(id);
-        if (teacher == null) {
-            throw new DataNotFoundException("Teacher with ID " + id + " not found.");
+        Room room = roomDAO.getById(id);
+        if (room == null) {
+            throw new DataNotFoundException("Room with ID " + id + " not found.");
         }
-        return teacher;
+        return room;
     }
     
     
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
-    public void addTeacher(Room room) {
+    public Response addRoom(Room room) {
         roomDAO.add(room);
+        
+        return Response.status(Response.Status.CREATED)
+                   .entity("Room created successfully with ID: " + room.getId()) 
+                   .build();
+    }
+    
+    @DELETE
+    @Path("/{roomId}")
+    public void deleteRoom(@PathParam("roomId") String id) {
+        Room existingRoom = roomDAO.getById(id);
+        if (existingRoom == null) {
+            throw new DataNotFoundException("Room with ID " + id + " not found.");
+        }
+        roomDAO.delete(id);
     }
     
     

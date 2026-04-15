@@ -2,16 +2,16 @@ package com.example.model;
 
 public class Sensor implements BaseModel {
     private String id;
-    private String name;
+    private String type;
     private String status;
     private double currentValue;
     private String roomId;
     
     public Sensor() {}
 
-    public Sensor(String id, String name, String status, double currentValue, String roomId) {
+    public Sensor(String id, String type, String status, double currentValue, String roomId) {
         this.id = id;
-        this.name = name;
+        this.type = type;
         this.status = status;
         this.currentValue = currentValue;
         this.roomId = roomId;
@@ -27,12 +27,12 @@ public class Sensor implements BaseModel {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public String getType() {
+        return type;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setType(String type) {
+        this.type = type;
     }
 
     public String getStatus() {

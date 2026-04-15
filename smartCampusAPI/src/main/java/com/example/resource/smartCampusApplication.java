@@ -16,6 +16,8 @@ public class smartCampusApplication extends Application {
         Set<Class<?>> resources = new java.util.HashSet<>();
         resources.add(com.example.resource.Discovery.class);
         resources.add(com.example.resource.SensorRoom.class);
+        resources.add(com.example.resource.SensorResource.class);
+        resources.add(com.example.resource.SensorReadingResource.class);
         // Add your other resource classes here as you create them
         return resources;
     }
