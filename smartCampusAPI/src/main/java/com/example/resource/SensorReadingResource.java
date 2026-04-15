@@ -1,6 +1,7 @@
 package com.example.resource;
 
 import com.example.dao.MockData;
+import com.example.exception.SensorUnavailableException;
 import com.example.model.Sensor;
 import com.example.model.SensorReading;
 import java.util.ArrayList;
@@ -36,7 +37,7 @@ public class SensorReadingResource {
                     .entity("No reading history found for sensor: " + this.sensorId)
                     .build();
         }
-        
+
         // If history is present we return a 201 and the list
         return Response.ok(history).build();
     }
@@ -46,12 +47,35 @@ public class SensorReadingResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Response addReading(SensorReading newReading) {
 
-        List<SensorReading> history = MockData.SENSORREADINGS.get(this.sensorId);
+        // We check the parent sensor to save its ID
+        Sensor parentSensor = null;
+        for (Sensor sensor : MockData.SENSORS) {
+            if (sensor.getId().equals(this.sensorId)) {
+                parentSensor = sensor;
+                break;
+            }
+        }
+
+        // If parentSensor doesn't exist we return a 404 Response.
+        if (parentSensor == null) {
+            return Response.status(Response.Status.NOT_FOUND)
+                    .entity("Sensor context " + this.sensorId + " not found.")
+                    .build();
+        }
+
+        // Now we check the status of the parentSensor, so that if it's a maintenance status we throw an error.
+        if ("MAINTENANCE".equalsIgnoreCase(parentSensor.getStatus())) {
+            throw new SensorUnavailableException("Sensor " + this.sensorId
+                    + " is currently under maintenance and cannot accept new readings.");
+        }
 
         // Preparing data for UUID and the current timestamp
         newReading.setId(UUID.randomUUID().toString());
         newReading.setTimestamp(System.currentTimeMillis());
 
+        
+        // Now we update the History or add new history to the sensor.
+        List<SensorReading> history = MockData.SENSORREADINGS.get(this.sensorId);
         if (history == null) {
             // Create a brand new list for this sensor
             history = new ArrayList<>();
@@ -61,22 +85,8 @@ public class SensorReadingResource {
         // Save the reading to the history list
         history.add(newReading);
 
-        // Find the sensor and update its current value
-        boolean updated = false;
-        for (Sensor sensor : MockData.SENSORS) {
-            if (sensor.getId().equals(this.sensorId)) {
-                sensor.setCurrentValue(newReading.getValue());
-                updated = true;
-                break;
-            }
-        }
-
-        // If the sensorId in the URL doesn't actually exist, return an error 404
-        if (!updated) {
-            return Response.status(Response.Status.NOT_FOUND)
-                    .entity("Sensor context " + this.sensorId + " not found.")
-                    .build();
-        }
+        // Update currentValue on the parentSensor
+        parentSensor.setCurrentValue(newReading.getValue());
 
         return Response.status(Response.Status.CREATED)
                 .entity(newReading)

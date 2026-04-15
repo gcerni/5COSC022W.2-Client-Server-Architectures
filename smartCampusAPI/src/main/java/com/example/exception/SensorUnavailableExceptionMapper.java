@@ -8,20 +8,22 @@ import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
 
 @Provider
-public class LinkedResourceNotFoundExceptionMapper implements ExceptionMapper<LinkedResourceNotFoundException> {
+public class SensorUnavailableExceptionMapper implements ExceptionMapper<SensorUnavailableException> {
 
     @Override
-    public Response toResponse(LinkedResourceNotFoundException exception) {
+    public Response toResponse(SensorUnavailableException exception) {
+
         // Simple map to output message
         Map<String, String> errorResponse = new HashMap<>();
-        errorResponse.put("error", "Unprocessable Entity");
+        errorResponse.put("error", "Forbidden");
         errorResponse.put("message", exception.getMessage());
-        errorResponse.put("status", "422");
+        errorResponse.put("status", "403");
 
-        // Unprocessable Entity
-        return Response.status(422)
+        // Forbidden Status
+        return Response.status(403)
                 .entity(errorResponse)
                 .type(MediaType.APPLICATION_JSON)
                 .build();
+
     }
 }

@@ -21,6 +21,8 @@ public class smartCampusApplication extends Application {
         resources.add(com.example.exception.DataNotFoundExceptionMapper.class);
         resources.add(com.example.exception.RoomNotEmptyExceptionMapper.class);
         resources.add(com.example.exception.LinkedResourceNotFoundExceptionMapper.class);
+        resources.add(com.example.exception.SensorUnavailableExceptionMapper.class);
+        resources.add(com.example.exception.GlobalExceptionMapper.class);
         
         // --- LoggingFilters ---
         resources.add(com.example.filter.LoggingFilter.class);

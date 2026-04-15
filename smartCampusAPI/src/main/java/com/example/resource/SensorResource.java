@@ -24,6 +24,7 @@ public class SensorResource {
 
     private GenericDAO<Sensor> sensorDAO = new GenericDAO<>(MockData.SENSORS);
     private GenericDAO<Room> roomDAO = new GenericDAO<>(MockData.ROOMS);
+    
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
