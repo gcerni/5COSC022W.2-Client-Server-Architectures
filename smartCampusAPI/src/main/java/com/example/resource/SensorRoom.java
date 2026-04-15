@@ -3,7 +3,9 @@ package com.example.resource;
 import com.example.dao.GenericDAO;
 import com.example.dao.MockData;
 import com.example.exception.DataNotFoundException;
+import com.example.exception.RoomNotEmptyException;
 import com.example.model.Room;
+import com.example.model.Sensor;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -52,12 +54,30 @@ public class SensorRoom {
     
     @DELETE
     @Path("/{roomId}")
-    public void deleteRoom(@PathParam("roomId") String id) {
+    public Response deleteRoom(@PathParam("roomId") String id) {
+        
+        // We check if the room has any sensors assigned to it
+        boolean hasSensor = false;
+        for (Sensor sensor : MockData.SENSORS) {
+            if (sensor.getRoomId().equals(id)) {
+                hasSensor = true;
+                break;
+            }
+        }
+        
+        // if room has a sensor assigned to it, we throw a message
+        if (hasSensor) {
+            throw new RoomNotEmptyException("The room " + id + " has currently sensor/s assigned to it.");
+        }
+        
+        
         Room existingRoom = roomDAO.getById(id);
         if (existingRoom == null) {
             throw new DataNotFoundException("Room with ID " + id + " not found.");
         }
         roomDAO.delete(id);
+        // Return a response 204 Success after deleting the room
+        return Response.noContent().build();
     }
     
     
