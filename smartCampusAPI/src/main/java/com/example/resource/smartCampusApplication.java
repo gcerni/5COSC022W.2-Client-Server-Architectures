@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package com.example.resource;
     
 import java.util.Set;
@@ -24,6 +20,7 @@ public class smartCampusApplication extends Application {
         // --- ExceptionMappers ---
         resources.add(com.example.exception.DataNotFoundExceptionMapper.class);
         resources.add(com.example.exception.RoomNotEmptyExceptionMapper.class);
+        resources.add(com.example.exception.LinkedResourceNotFoundExceptionMapper.class);
         
         // --- LoggingFilters ---
         resources.add(com.example.filter.LoggingFilter.class);
