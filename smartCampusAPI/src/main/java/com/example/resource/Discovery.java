@@ -24,6 +24,7 @@ public class Discovery {
         Map<String, String> links = new HashMap<>();
         links.put("rooms", "/api/v1/rooms");
         links.put("sensors", "/api/v1/sensors");
+        links.put("sensors reading", "/api/v1/sensors/{sensorId}/readings");
         
         discovery.put("end-points", links);
 
